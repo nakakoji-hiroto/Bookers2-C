@@ -14,4 +14,8 @@ class Group < ApplicationRecord
   def get_group_image
     (group_image.attached?) ? group_image : 'no_image.jpg'
   end
+  
+  def includesUser?(user)
+    group_users.exists?(user_id: user.id)
+  end
 end

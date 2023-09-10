@@ -22,6 +22,9 @@ class GroupsController < ApplicationController
     @group = Group.new(group_params)
     @group.owner_id = current_user.id
     if @group.save
+      group_user = current_user.group_users.new
+      group_user.group_id = @group.id
+      group_user.save
       redirect_to groups_path, method: :post
     else
       render 'new'
