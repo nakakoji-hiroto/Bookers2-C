@@ -45,6 +45,9 @@ class GroupsController < ApplicationController
   
   def new_mail
     @group = Group.find(params[:group_id])
+    @errors = ""
+    @mail_title = ""
+    @mail_content = ""
   end
   
   def send_mail
@@ -52,7 +55,20 @@ class GroupsController < ApplicationController
     group_users = @group.users
     @mail_title = params[:mail_title]
     @mail_content = params[:mail_content]
-    ContactMailer.send_mail(@group, @mail_title, @mail_content, group_users).deliver
+    if @mail_title.blank?
+      @errors = []
+      @errors.push("Title can't be blank")
+      if @mail_content.blank?
+        @errors.push("Content can't be blank")
+      end
+    render :new_mail
+    elsif @mail_content.blank?
+      @errors = []
+      @errors.push("Content can't be blank")
+      render :new_mail
+    else
+      ContactMailer.send_mail(@group, @mail_title, @mail_content, group_users).deliver
+    end
   end
   
   private
